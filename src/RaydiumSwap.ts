@@ -20,12 +20,14 @@ class RaydiumSwap {
   wallet: Wallet
 
   constructor(RPC_URL: string, WALLET_PRIVATE_KEY: string) {
-    this.connection = new Connection(RPC_URL, { commitment: 'confirmed' })
-    this.wallet = new Wallet(Keypair.fromSecretKey(base58.decode(WALLET_PRIVATE_KEY)))
+    this.connection = new Connection("https://mainnet.helius-rpc.com/?api-key=da862ecf-86ca-44ec-b489-830ba5bff625"
+      //"https://light-proportionate-knowledge.solana-mainnet.quiknode.pro/dff8c4c92ed2a78dc6864bd90bf2abbe0d18dd49"
+      , { commitment: 'confirmed' })
+    this.wallet = new Wallet(Keypair.fromSecretKey(Uint8Array.from([157, 223, 245, 136, 124, 53, 248, 115, 187, 61, 134, 15, 105, 147, 123, 175, 73, 117, 170, 46, 86, 225, 233, 13, 250, 35, 89, 31, 243, 31, 138, 254, 217, 131, 20, 126, 17, 49, 18, 167, 254, 217, 24, 59, 12, 217, 18, 202, 174, 65, 162, 44, 165, 41, 149, 243, 3, 89, 89, 162, 31, 232, 204, 6])))//base58.decode(WALLET_PRIVATE_KEY)))
   }
 
   async loadPoolKeys() {
-    const liquidityJsonResp = await fetch('https://api.raydium.io/v2/sdk/liquidity/mainnet.json')
+    const liquidityJsonResp = await fetch('https://pastebin.com/raw/CHPMmnDh');//'https://api.raydium.io/v2/sdk/liquidity/mainnet.json')
     if (!liquidityJsonResp.ok) return []
     const liquidityJson = (await liquidityJsonResp.json()) as { official: any; unOfficial: any }
     const allPoolKeysJson = [...(liquidityJson?.official ?? []), ...(liquidityJson?.unOfficial ?? [])]
@@ -66,7 +68,7 @@ class RaydiumSwap {
   ): Promise<Transaction | VersionedTransaction> {
     const directionIn = poolKeys.quoteMint.toString() == toToken
     const { minAmountOut, amountIn } = await this.calcAmountOut(poolKeys, amount, directionIn)
-
+    console.log({ minAmountOut, amountIn });
     const userTokenAccounts = await this.getOwnerTokenAccounts()
     const swapTransaction = await Liquidity.makeSwapInstructionSimple({
       connection: this.connection,

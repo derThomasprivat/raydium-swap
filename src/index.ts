@@ -2,12 +2,13 @@ import RaydiumSwap from './RaydiumSwap'
 import { Transaction, VersionedTransaction } from '@solana/web3.js'
 
 const swap = async () => {
-  const executeSwap = false // Change to true to execute swap
+  const executeSwap = true // Change to true to execute swap
   const useVersionedTransaction = true // Use versioned transaction
   const tokenAAmount = 0.01 // e.g. 0.01 SOL -> B_TOKEN
 
   const tokenAAddress = 'So11111111111111111111111111111111111111112' // e.g. SOLANA mint address
-  const tokenBAddress = 'HZ1JovNiVvGrGNiiYvEozEVgZ58xaU3RKwX8eACQBCt3' // e.g. PYTH mint address
+  const tokenBAddress = 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v' // e.g. FATHER mint address
+  const LPpoolAddress = '8HoQnePLqPj4M7PUDzfw8e3Ymdwgc7NLGnaTUapubyvu'
 
   const raydiumSwap = new RaydiumSwap(process.env.RPC_URL, process.env.WALLET_PRIVATE_KEY)
   console.log(`Raydium swap initialized`)
@@ -19,10 +20,11 @@ const swap = async () => {
   // Trying to find pool info in the json we loaded earlier and by comparing baseMint and tokenBAddress
   const poolInfo = raydiumSwap.findPoolInfoForTokens(tokenAAddress, tokenBAddress)
   console.log('Found pool info')
+  //console.log(poolInfo)
 
   const tx = await raydiumSwap.getSwapTransaction(
-    tokenBAddress,
-    tokenAAmount,
+    tokenAAddress,//tokenBAddress,
+    1,//tokenAAmount,
     poolInfo,
     100000, // Max amount of lamports
     useVersionedTransaction,
